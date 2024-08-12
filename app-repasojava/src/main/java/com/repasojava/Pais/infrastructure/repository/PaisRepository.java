@@ -2,6 +2,8 @@ package com.repasojava.Pais.infrastructure.repository;
 
 import com.repasojava.Pais.domain.entity.Pais;
 import com.repasojava.Pais.domain.service.PaisService;
+
+import java.util.Optional;
 import java.util.Properties;
 import java.sql.*;
 
@@ -31,7 +33,7 @@ public class PaisRepository implements PaisService{
 
             try(ResultSet generatedKeys = statement.getGeneratedKeys()) {
                 if (generatedKeys.next()) {
-                    pais.setId(generatedKeys.getInt(1));
+                    pais.setId(generatedKeys.getLong(1));
                 }
             }
             connection.close();
@@ -41,18 +43,30 @@ public class PaisRepository implements PaisService{
     }
 
     @Override
-    public void findPaisById(Long id) {
+    public Optional<Pais> findPaisById(Long id) {
         String sql = "select * from pais where id = ?";
         try (PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setLong(1, id);
-            ResultSet rs = statement.executeQuery();
-            while (rs.next()) {
-                System.out.println("ID: " + rs.getInt("id"));
-                System.out.println("Descripcion: " + rs.getString("descripcion"));
+
+            try(ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    Pais pais = new Pais(
+                        rs.getLong("id"),
+                        rs.getString("descrpcion")
+                    );
+                    return Optional.of(pais);
+                }
             }
         } catch(SQLException e) {
             e.printStackTrace();
         }
+        return Optional.empty();
+    }
+    
+    @Override
+    public void update(Long id) {
+        throw new UnsupportedOperationException("Unimplemented method 'update'");
     }
 
+    
 }

@@ -1,16 +1,32 @@
 package com.repasojava;
 
-import com.repasojava.Pais.application.CreatePaisUseCase;
-import com.repasojava.Pais.domain.service.PaisService;
+
+import javax.swing.JOptionPane;
+
 import com.repasojava.Pais.infrastructure.controller.PaisController;
-import com.repasojava.Pais.infrastructure.repository.PaisRepository;
+
 
 public class Main {
     public static void main(String[] args) {
-        PaisService paisService = new PaisRepository();
-        CreatePaisUseCase createPaisUseCase = new CreatePaisUseCase(paisService);
-        PaisController consoleAdapter = new PaisController(createPaisUseCase);
         
-        consoleAdapter.AddPais();
+
+        String opciones = "1. Country Module\n2. Exit";
+        int op;
+        do {
+            op = Integer.parseInt(JOptionPane.showInputDialog(null, opciones));
+            switch (op) {
+                case 1:
+                    PaisController consoleAdapter = new PaisController();
+                    consoleAdapter.mainMenu();
+                    break;
+                case 2:
+                    JOptionPane.showMessageDialog(null, "Suerte no vemos.");
+                    break;
+                default:
+                    JOptionPane.showMessageDialog(null, "Error opcion invalida.");
+                    break;
+            }
+
+        } while(op!=2);
     }
 }
